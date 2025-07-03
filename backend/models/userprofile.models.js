@@ -29,8 +29,6 @@ const userProfileSchema = mongoose.Schema({
         type: String,
         default: ""
     }
-
-
 }, {
     timestamps: true
 })
