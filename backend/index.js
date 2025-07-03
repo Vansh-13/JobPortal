@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDb from "./utils/db.utils.js";
 import userRoutes from "./routes/user.routes.js";
+import companyRoutes from "./routes/company.routes.js";
 import isAuth from "./middleware/isAuth.middleware.js";
 dotenv.config();
 const app=express();
@@ -18,6 +19,7 @@ app.use(cors({
 }))
 
 app.use("/api/user",userRoutes);
+app.use("/api/company",companyRoutes);
  connectDb().then(()=>{
     app.listen( process.env.PORT|| 3000,(err)=>{
   if(err){
