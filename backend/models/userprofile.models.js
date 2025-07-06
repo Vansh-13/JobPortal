@@ -16,7 +16,7 @@ const userProfileSchema = mongoose.Schema({
     },
     resume: { 
         type: String
-
+ 
     },
     resumeOriginalName: {
         type: String

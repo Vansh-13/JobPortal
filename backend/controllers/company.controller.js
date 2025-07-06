@@ -27,7 +27,7 @@ export const registerCompany = async (req, res) => {
             location,
             website,
             logo,
-            userId: userID,
+            userId: req.user.userID,
         });
 
         return res.status(201).json({
@@ -47,13 +47,13 @@ export const registerCompany = async (req, res) => {
 
 export const getCompany = async (req, res) => {
     try {
-        const userId = req.user.userID;
+        const userId = req.user.userId;
         const company = await Company.find({
             userId: userId
         });
         if (!company || company.length === 0) {
             return res.status(404).json({
-                message: "Company notn found",
+                message: "Company not found",
                 success: false,
             })
         } else {
@@ -104,12 +104,12 @@ export const updateCompany = async (req, res) => {
     try {
         const { name, description, location, website, logo } = req.body;
 
-        if (!name || !description || !location || !website) {
-            return res.status(400).json({
-                message: "All fields are required",
-                success: false,
-            });
-        }
+        // if (!name || !description || !location || !website) {
+        //     return res.status(400).json({
+        //         message: "All fields are required",
+        //         success: false,
+        //     });
+        // }
 
         const data = {
             name,
