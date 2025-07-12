@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
-import { LogOut, User2, Briefcase, Menu } from 'lucide-react';
+import { LogOut, UserCircle2, BriefcaseBusiness, Menu } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const Avatar = () => (
   <img
@@ -12,41 +14,41 @@ const Avatar = () => (
 
 function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
-  const user = false;
+  const { user } = useSelector((store) => store.auth);
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <header className="bg-white shadow-md border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-        {/* Logo + Icon */}
-        <div className="flex items-center gap-2 text-2xl font-semibold text-gray-900">
-          <Briefcase className="text-indigo-600" size={26} />
-          Job<span className="text-indigo-600">World</span>
-        </div>
+        <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+          <BriefcaseBusiness className="text-teal-600" size={26} />
+          Job<span className="text-teal-600">World</span>
+        </Link>
 
-        {/* Mobile Menu Button */}
         <button className="md:hidden" onClick={() => setMobileMenu(!mobileMenu)}>
           <Menu size={26} className="text-gray-800" />
         </button>
 
-        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-10">
           <nav>
-            <ul className="flex items-center gap-6 text-[15px] font-medium text-gray-700">
-              <li><a href="/" className="hover:text-indigo-600 transition">Home</a></li>
-              <li><a href="/jobs" className="hover:text-indigo-600 transition">Jobs</a></li>
-              <li><a href="/browse" className="hover:text-indigo-600 transition">Browse</a></li>
+            <ul className="flex items-center gap-6 text-sm font-medium text-gray-700">
+              <li><Link to="/" className="hover:text-teal-600 transition">Home</Link></li>
+              <li><Link to="/jobs" className="hover:text-teal-600 transition">Jobs</Link></li>
+              <li><Link to="/browse" className="hover:text-teal-600 transition">Explore Roles</Link></li>
             </ul>
           </nav>
 
-          {/* Auth buttons / Avatar */}
           {!user ? (
             <div className="flex items-center gap-3">
-              <button className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50 transition">
-                Login
-              </button>
-              <button className="px-4 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
-                Signup
-              </button>
+              <Link to="/login">
+                <button className="px-4 py-1.5 border border-teal-600 text-teal-600 rounded-md hover:bg-teal-50 transition text-sm">
+                  Login
+                </button>
+              </Link>
+              <Link to="/signup">
+                <button className="px-4 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
+                  Signup
+                </button>
+              </Link>
             </div>
           ) : (
             <Popover>
@@ -58,16 +60,18 @@ function Navbar() {
                 className="bg-white rounded-md shadow-lg p-4 w-56 border border-gray-200 text-sm text-gray-800"
               >
                 <div className="mb-3">
-                  <p className="font-medium">Hello, User</p>
-                  <p className="text-gray-500 text-sm">Creative professional with a focus on results.</p>
+                  <p className="font-semibold">
+                    Hello, {user?.firstName || user?.name?.split(" ")[0] || 'User'}
+                  </p>
+                  <p className="text-gray-500 text-xs">Creative professional focused on results.</p>
                 </div>
-                <div className="flex flex-col gap-3 text-[14px]">
-                  <a href="/profile" className="flex items-center gap-2 hover:text-indigo-600 transition">
-                    <User2 size={16} /> Profile
-                  </a>
-                  <a href="/logout" className="flex items-center gap-2 hover:text-red-600 transition">
+                <div className="flex flex-col gap-3 text-sm">
+                  <Link to="/profile" className="flex items-center gap-2 hover:text-teal-600 transition">
+                    <UserCircle2 size={16} /> Profile
+                  </Link>
+                  <Link to="/logout" className="flex items-center gap-2 hover:text-red-600 transition">
                     <LogOut size={16} /> Logout
-                  </a>
+                  </Link>
                 </div>
               </PopoverContent>
             </Popover>
@@ -75,36 +79,37 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
       {mobileMenu && (
         <div className="md:hidden bg-white border-t px-4 py-4 shadow-md space-y-3 animate-slideDown">
           <nav>
-            <ul className="space-y-3 text-gray-700 text-base font-medium">
-              <li><a href="/" className="block hover:text-indigo-600">Home</a></li>
-              <li><a href="/jobs" className="block hover:text-indigo-600">Jobs</a></li>
-              <li><a href="/browse" className="block hover:text-indigo-600">Browse</a></li>
+            <ul className="space-y-3 text-gray-700 text-sm font-medium">
+              <li><Link to="/" className="block hover:text-teal-600">Home</Link></li>
+              <li><Link to="/jobs" className="block hover:text-teal-600">Jobs</Link></li>
+              <li><Link to="/browse" className="block hover:text-teal-600">Explore Roles</Link></li>
             </ul>
           </nav>
 
           {!user ? (
-            <div className="flex flex-col gap-3 pt-3">
-                <a href='/login'> <button className="w-full py-2 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50 transition">
-                Login
-              </button></a>
-              <a href='/signup'>
-              <button className="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
-                Signup
-              </button></a>
-              
+            <div className="flex flex-col gap-3 pt-4">
+              <Link to="/login">
+                <button className="w-full py-2 border border-teal-600 text-teal-600 rounded-md hover:bg-teal-50 transition">
+                  Login
+                </button>
+              </Link>
+              <Link to="/signup">
+                <button className="w-full py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition">
+                  Signup
+                </button>
+              </Link>
             </div>
           ) : (
-            <div className="space-y-3 pt-3">
-              <a href="/profile" className="flex items-center gap-2 hover:text-indigo-600">
-                <User2 size={18} /> Profile
-              </a>
-              <a href="/logout" className="flex items-center gap-2 hover:text-red-600">
+            <div className="space-y-3 pt-3 text-sm">
+              <Link to="/profile" className="flex items-center gap-2 hover:text-teal-600">
+                <UserCircle2 size={18} /> Profile
+              </Link>
+              <Link to="/logout" className="flex items-center gap-2 hover:text-red-600">
                 <LogOut size={18} /> Logout
-              </a>
+              </Link>
             </div>
           )}
         </div>

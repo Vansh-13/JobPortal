@@ -1,156 +1,99 @@
-// import React from 'react';
-// import Navbar from '../shared/Navbar';
-
-// function Signup() {
-//   return (
-//     <div className="min-h-screen bg-gray-100">
-//       <Navbar />
-
-//       <div className="flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-//         <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-//           <div className="mb-6 text-center">
-//             <h2 className="text-2xl font-semibold text-gray-800">Create an Account</h2>
-//             <p className="mt-1 text-sm text-gray-500">Join to explore opportunities or hire talent.</p>
-//           </div>
-
-//           <form className="space-y-5">
-//             <div className="grid grid-cols-2 gap-4">
-//               <div>
-//                 <label className="block text-sm font-medium text-gray-700">First Name</label>
-//                 <input
-//                   type="text"
-//                   className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-//                   placeholder="John"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium text-gray-700">Last Name</label>
-//                 <input
-//                   type="text"
-//                   className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-//                   placeholder="Doe"
-//                 />
-//               </div>
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">Email</label>
-//               <input
-//                 type="email"
-//                 className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-//                 placeholder="you@example.com"
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">Password</label>
-//               <input
-//                 type="password"
-//                 className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-//                 placeholder="••••••••"
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">Phone</label>
-//               <input
-//                 type="tel"
-//                 className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-//                 placeholder="+91 9876543210"
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">Role</label>
-//               <select className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-//                 <option value="">Select Role</option>
-//                 <option value="user">User</option>
-//                 <option value="recruiter">Recruiter</option>
-//               </select>
-//             </div>
-
-//             <button
-//               type="submit"
-//               className="w-full mt-4 bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
-//             >
-//               Sign Up
-//             </button>
-//           </form>
-
-//           <p className="mt-6 text-sm text-center text-gray-500">
-//             Already have an account?{' '}
-//             <a href="/login" className="text-indigo-600 hover:underline">Login</a>
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Signup;
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../shared/Navbar';
+import axios from "axios";
+import { API } from '../../utils/api.js';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { ImSpinner2 } from "react-icons/im";
 
 function Signup() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const [input, setInput] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    role: "",
+    password: ""
+  });
+
+  const changeHandle = (e) => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const validateForm = () => {
+    const { firstName, lastName, email, phone, role, password } = input;
+    if (!firstName || !lastName || !email || !phone || !role || !password) {
+      toast.error("Please fill all the fields.");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      await axios.post(`${API}/register`, input);
+      toast.success("Registration Successful!");
+      navigate("/login");
+      setInput({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        role: "",
+        password: ""
+      });
+    } catch (error) {
+      if (error.response?.status === 409) {
+        toast.error("Email already exists.");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const inputClass = "w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500";
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-
       <div className="flex justify-center items-center px-4 py-10">
         <div className="flex w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Left Image/Illustration */}
-          <div className="hidden md:block md:w-1/2 bg-indigo-50">
+          <div className="hidden md:block md:w-1/2 bg-teal-50">
             <img
               src="https://illustrations.popsy.co/gray/work-from-home.svg"
               alt="Signup illustration"
               className="object-cover w-full h-full"
             />
           </div>
-
-          {/* Right Signup Form */}
-          <div className="w-full md:w-1/2 p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">
-              Create your account
-            </h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Join our platform to find jobs or hire talent.
-            </p>
-
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  className="input-field"
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  className="input-field"
-                />
+          <div className="w-full md:w-1/2 p-8 sm:p-10">
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">Create your account</h2>
+            <p className="text-sm text-gray-500 mb-6">Join our platform to find jobs or hire talent.</p>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input type="text" name="firstName" value={input.firstName} onChange={changeHandle} placeholder="First Name" className={inputClass} />
+                <input type="text" name="lastName" value={input.lastName} onChange={changeHandle} placeholder="Last Name" className={inputClass} />
               </div>
-
-              <input
-                type="email"
-                placeholder="Email"
-                className="input-field"
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                className="input-field"
-              />
-
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="input-field"
-              />
-
-              <select className="input-field">
+              <input type="email" name="email" value={input.email} onChange={changeHandle} placeholder="Email" className={inputClass} />
+              <input type="password" name="password" value={input.password} onChange={changeHandle} placeholder="Password" className={inputClass} />
+              <input type="tel" name="phone" value={input.phone} onChange={changeHandle} placeholder="Phone Number" className={inputClass} />
+              <select name="role" value={input.role} onChange={changeHandle} className={inputClass}>
                 <option value="">Select Role</option>
                 <option value="user">User</option>
                 <option value="recruiter">Recruiter</option>
@@ -158,17 +101,18 @@ function Signup() {
 
               <button
                 type="submit"
-                className="w-full py-2 bg-indigo-600 text-white font-medium rounded hover:bg-indigo-700 transition"
+                className="w-full py-2 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 transition flex items-center justify-center"
+                disabled={loading}
               >
-                Signup
+                {loading ? (
+                  <ImSpinner2 className="animate-spin mr-2" size={18} />
+                ) : null}
+                {loading ? "Signing up..." : "Signup"}
               </button>
             </form>
-
             <p className="mt-4 text-sm text-gray-500">
-              Already have an account?{' '}
-              <a href="/login" className="text-indigo-600 hover:underline">
-                Login
-              </a>
+              Already have an account?{" "}
+              <a href="/login" className="text-teal-600 hover:underline">Login</a>
             </p>
           </div>
         </div>
