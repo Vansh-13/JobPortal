@@ -19,6 +19,7 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
 }))
+app.use('/assets', express.static('public/assets'));
 
 app.use("/api/user",userRoutes);
 app.use("/api/company",companyRoutes);

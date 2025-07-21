@@ -19,20 +19,22 @@ const categories = [
 
 function CategoryCarousel() {
   return (
-    <section className="py-12 px-4 bg-gradient-to-b from-gray-50 to-white">
-      <h2 className="text-3xl font-semibold text-teal-700 mb-8 text-center">
-        Explore Job Categories
+    <section className="py-16 px-4 bg-gradient-to-t from-white via-gray-50 to-teal-50">
+      <h2 className="text-4xl font-bold text-center text-teal-700 mb-12">
+        🔍 Explore Career Categories
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
         {categories.map(({ name, icon: Icon }, index) => (
-          <button
+          <div
             key={index}
-            className="flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white text-gray-700 text-sm font-normal border border-gray-200 rounded-lg shadow-sm hover:bg-teal-100 transition duration-200"
+            className="flex flex-col items-center justify-center gap-3 px-6 py-8 bg-white/70 backdrop-blur-lg border border-gray-200 rounded-2xl shadow-md hover:shadow-lg hover:bg-white transition duration-200 transform hover:scale-105"
           >
-            <Icon size={22} className="text-teal-600" />
-            <span className="text-center">{name}</span>
-          </button>
+            <Icon size={28} className="text-cyan-600" />
+            <span className="text-center text-gray-800 font-medium text-sm">
+              {name}
+            </span>
+          </div>
         ))}
       </div>
     </section>

@@ -4,7 +4,7 @@ import Job from "../models/job.models.js";
 
 export const applyJob = async (req, res) => {
     try {
-        const userId = req.user.userId;
+        const userId = req.user?.userId;
         const jobId = req.params.id;
         const { resume } = req.body;
 

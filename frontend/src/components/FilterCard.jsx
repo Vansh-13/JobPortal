@@ -17,27 +17,35 @@ const filterData = [
 
 function FilterCard() {
   return (
-    <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 space-y-6">
-      <h2 className="text-lg font-semibold text-gray-800">Filter Jobs</h2>
-      <hr className="border-gray-200" />
+    <div className="bg-white/90 backdrop-blur rounded-xl border border-gray-100 shadow-md p-6 space-y-6">
+      <h2 className="text-xl font-bold text-gray-800">Filter Jobs</h2>
 
       {filterData.map((filter, index) => (
-        <div key={index}>
-          <h3 className="text-sm font-medium text-gray-700 mb-2">{filter.filterType}</h3>
+        <div key={index} className="space-y-3">
+          {/* Section Header */}
+          <h3 className="text-sm font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-md inline-block">
+            {filter.filterType}
+          </h3>
+
+          {/* Filter Options */}
           <div className="space-y-2">
             {filter.arrays.map((item, i) => (
-              <div key={i} className="flex items-center space-x-2">
+              <label
+                key={i}
+                htmlFor={`${filter.filterType}-${item}`}
+                className="flex items-center gap-2 cursor-pointer group"
+              >
                 <input
                   type="radio"
                   name={filter.filterType}
                   id={`${filter.filterType}-${item}`}
                   value={item}
-                  className="accent-teal-600"
+                  className="accent-teal-600 w-4 h-4 group-hover:scale-110 transition-transform duration-150"
                 />
-                <label htmlFor={`${filter.filterType}-${item}`} className="text-sm text-gray-600">
+                <span className="text-sm text-gray-700 group-hover:text-teal-700 transition-colors">
                   {item}
-                </label>
-              </div>
+                </span>
+              </label>
             ))}
           </div>
         </div>

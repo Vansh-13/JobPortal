@@ -35,6 +35,6 @@ const userAddressSchema=mongoose.Schema({
 },{
     timestamps: true
 })
-
+userAddressSchema.index({ userID: 1 });
 const UserAddress=mongoose.model("UserAddress",userAddressSchema);
 export default UserAddress;

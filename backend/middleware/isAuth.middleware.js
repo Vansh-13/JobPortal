@@ -1,51 +1,25 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-dotenv.config({
-    path: path.join(__dirname, "../.env")
-});
+import userModel from "../models/user.models.js";
 
 const isAuth = async (req, res, next) => {
-    try {
-        const token = req.cookies;
-        if (!token || !token.token) {
-            return res.status(401).json({
-                message: "Unauthorized access",
-                success: false,
-            });
-        }
-        else {
-            const decode = jwt.verify(token.token, process.env.SECRET_KEY);
-            if (!decode) {
-                return res.status(401).json({
-                    message: "Unauthorized access",
-                    success: false,
-                });
-            }
-            else {
-                req.user = { userId: decode.userId };
-                next();
-
-
-
-            }
-        }
-
-
-
-    } catch (err) {
-        console.error("Error in authentication middleware:", err);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-        });
-
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized - No token" });
     }
-}
+
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const user = await userModel.findById(decoded.userId);
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized - User not found" });
+    }
+
+    req.user = { userId: user._id }; // ✅ Yeh line required hai
+    next();
+  } catch (error) {
+    console.error("isAuth error:", error);
+    return res.status(401).json({ message: "Unauthorized - Invalid token" });
+  }
+};
+
 export default isAuth;

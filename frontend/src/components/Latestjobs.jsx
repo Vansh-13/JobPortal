@@ -1,9 +1,14 @@
 import React from 'react';
 import LatestJobsCart from './LatestJobsCart';
-
-const dummyJobs = [1, 2, 3, 4, 5, 6, 7, 8];
+import { useSelector } from 'react-redux';
 
 function LatestJobs() {
+  const allJobs = useSelector((store) => store.job.allJobs); 
+
+  const sortedJobs = [...allJobs].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   return (
     <section className="bg-gray-50 py-14 px-4">
       <div className="max-w-7xl mx-auto">
@@ -18,16 +23,20 @@ function LatestJobs() {
         </div>
 
         {/* Job Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {dummyJobs.map((job, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <LatestJobsCart />
-            </div>
-          ))}
-        </div>
+        {sortedJobs.length === 0 ? (
+          <p className="text-center text-gray-500">No jobs available.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {sortedJobs.map((job, index) => (
+              <div
+                key={job._id || index}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <LatestJobsCart job={job} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

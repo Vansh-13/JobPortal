@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import Navbar from './components/shared/Navbar';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -9,26 +9,52 @@ import Jobs from './components/Jobs';
 import Explore from './components/Explore';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import WelcomeOverlay from './components/WelcomeOverlay'; // ✅ Add this line
+import Profile from './components/profile/Profile';
+import JobDescription from './components/JobDescription';
+import api from './utils/api';
+import { useDispatch } from 'react-redux';
+import { setUser } from './redux/authSlice';
+import Companies from './components/admin/Companies';
+import CompanyNew from './components/admin/CompanyNew';
 
 const appRouter = createBrowserRouter([
   { path: '/', element: <Home /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <Signup /> },
   { path: '/jobs', element: <Jobs /> },
-  { path: '/browse', element: <Explore /> }
+  { path: '/browse', element: <Explore /> },
+  { path: '/profile', element: <Profile /> },
+  { path: '/description/:id', element: <JobDescription /> },
+  {
+    path:'/admin/company', element:<Companies/>
+  },{
+    path:'/admin/job',
+  },
+  {
+    path:"/admin/company/new",
+    element:<CompanyNew/>
+  }
 ]);
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        //const res = await api.get('/user/me'); 
+        //dispatch(setUser(res.data.user));      
+      } catch (err) {
+        console.log("Not logged in");
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <>
-      {/* ✅ Show welcome screen on load */}
-      <WelcomeOverlay />
-
-      {/* ✅ Toast Notification */}
       <ToastContainer position="top-right" autoClose={3000} />
-
-      {/* ✅ Page Routing */}
       <RouterProvider router={appRouter} />
     </>
   );
