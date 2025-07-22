@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { ImSpinner2 } from "react-icons/im";
 import { Eye, EyeOff } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
 
 function Signup() {
   const navigate = useNavigate();
@@ -87,6 +88,12 @@ function Signup() {
   const inputClass =
     "w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500";
 
+  const handleGoogleSignup = () => {
+    // Fallback to localhost:7000 if env not set
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7000';
+    window.location.href = `${baseUrl}/auth/google`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -126,6 +133,7 @@ function Signup() {
                   className={inputClass}
                 />
               </div>
+
               <input
                 type="email"
                 name="email"
@@ -135,7 +143,6 @@ function Signup() {
                 className={inputClass}
               />
 
-              {/* Password field with eye icon */}
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -147,9 +154,9 @@ function Signup() {
                 />
                 <div
                   className="absolute right-3 top-2.5 cursor-pointer text-gray-500 hover:text-teal-600"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() => setShowPassword(prev => !prev)}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                 </div>
               </div>
 
@@ -182,6 +189,20 @@ function Signup() {
                 {loading ? "Signing up..." : "Signup"}
               </button>
             </form>
+
+            {/* Google Signup */}
+            {input.role === 'user' && (
+              <div className="mt-6 text-center">
+                <p className="text-gray-500 mb-2">or</p>
+                <button
+                  onClick={handleGoogleSignup}
+                  className="w-full flex items-center justify-center gap-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                >
+                  <FcGoogle size={22} />
+                  <span className="text-sm font-medium text-gray-700">Sign up with Google</span>
+                </button>
+              </div>
+            )}
 
             <p className="mt-4 text-sm text-gray-500">
               Already have an account?{" "}

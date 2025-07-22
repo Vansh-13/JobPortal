@@ -6,7 +6,7 @@ import { adminJob, getAllJobs, getJobById, postJob } from "../controllers/job.co
 
 router.post("/postJob", isAuth, postJob);
 router.get("/getJob", isAuth, getAllJobs);
-router.get("/get/adminJob", isAuth, adminJob);
+router.get("/adminJob", isAuth, adminJob);
 router.get("/getJob/:id", isAuth, getJobById);
 
 export default router;

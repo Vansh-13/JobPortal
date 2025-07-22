@@ -1,48 +1,33 @@
 import Company from "../models/company.models.js";
 
 export const registerCompany = async (req, res) => {
-    try {
-        const { name, description, location, website, logo } = req.body;
+  try {
+    const { companyName } = req.body;
+    const userID = req.user.userId;
 
-        if (!name || !description || !location || !website) {
-            return res.status(400).json({
-                message: "All fields are required",
-                success: false,
-            });
-        }
-
-        const userID = req.user.userId;
-        const existCompany = await Company.findOne({ userId: userID });
-
-        if (existCompany) {
-            return res.status(400).json({
-                message: "Company already registered",
-                success: false,
-            });
-        }
-
-        const newCompany = await Company.create({
-            name,
-            description,
-            location,
-            website,
-            logo,
-            userId: req.user.userID,
-        });
-
-        return res.status(201).json({
-            message: "Company registered successfully",
-            success: true,
-            company: newCompany,
-        });
-
-    } catch (err) {
-        console.log("Some Error in registering company", err);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-        });
+    if (!companyName) {
+      return res.status(400).json({ message: "Company name is required.", success: false });
     }
+
+    const existingCompany = await Company.findOne({ name: companyName });
+    if (existingCompany) {
+      return res.status(400).json({ message: "You can't register same company.", success: false });
+    }
+
+    const newCompany = await Company.create({
+      name: companyName,
+      userId: userID
+    });
+
+    return res.status(201).json({
+      message: "Company registered successfully.",
+      company: newCompany,
+      success: true
+    });
+  } catch (error) {
+    console.log("Error registering company:", error);
+    return res.status(500).json({ message: "Internal server error.", success: false });
+  }
 };
 
 export const getCompany = async (req, res) => {
@@ -60,7 +45,7 @@ export const getCompany = async (req, res) => {
             return res.status(200).json({
                 message: "Company details fetched Successfully",
                 success: true,
-                company: company
+                companies: company
             })
         }
 
@@ -101,44 +86,38 @@ export const getCompanyById = async (req, res) => {
     }
 }
 export const updateCompany = async (req, res) => {
-    try {
-        const { name, description, location, website, logo } = req.body;
+  try {
+    const { name, description, location, website } = req.body;
+   const logo = req.file ? `/assets/${req.file.filename}` : undefined;
 
-        // if (!name || !description || !location || !website) {
-        //     return res.status(400).json({
-        //         message: "All fields are required",
-        //         success: false,
-        //     });
-        // }
+const data = {
+  name,
+  description,
+  location,
+  website,
+};
 
-        const data = {
-            name,
-            description,
-            location,
-            website,
-            logo
-        };
+if (logo) data.logo = logo;
 
-        const company = await Company.findByIdAndUpdate(req.params.id, data, { new: true });
+const company = await Company.findByIdAndUpdate(req.params.id, data, { new: true });
 
-        if (!company) {
-            return res.status(404).json({
-                message: "Company not found",
-                success: false,
-            });
-        }
-
-        return res.status(200).json({
-            message: "Company updated successfully",
-            success: true,
-            company,
-        });
-
-    } catch (err) {
-        console.log("Error in updating company", err);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-        });
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found",
+        success: false,
+      });
     }
+
+    return res.status(200).json({
+      message: "Company updated successfully",
+      success: true,
+      company,
+    });
+  } catch (err) {
+    console.error("Error in updating company", err);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
 };

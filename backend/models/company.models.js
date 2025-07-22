@@ -3,19 +3,20 @@ import mongoose from "mongoose";
 const companySchema = mongoose.Schema({
     name:{
         type: String,
-        required: true
+        required: true,
+        unique:true
     },
     description:{
         type: String,
-        required: true
+        
     },
     location:{
         type: String,
-        required: true
+        
     },
     website:{
         type: String,
-        required: true
+      
     },
     logo:{
         type: String,

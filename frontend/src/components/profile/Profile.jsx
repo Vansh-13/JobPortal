@@ -42,7 +42,7 @@ export default function Profile() {
   const [editUserInfo, setEditUserInfo] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [showApplications, setShowApplications] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -134,7 +134,6 @@ export default function Profile() {
       <Navbar />
 
       <div className="max-w-4xl mx-auto mt-6 px-4 md:px-8">
-        {/* Recruiter Simplified View */}
         {isRecruiter ? (
           <div className="bg-white border shadow-md rounded-xl p-6 md:p-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Recruiter Profile</h2>
@@ -145,8 +144,17 @@ export default function Profile() {
             </div>
           </div>
         ) : (
-          // Full Profile View for Regular Users
           <>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-gray-800">Profile Info</h2>
+              <button
+                onClick={() => setShowApplications(true)}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              >
+                Show Applied Jobs
+              </button>
+            </div>
+
             {/* User Info */}
             <div className="bg-white border shadow-md rounded-xl p-6 md:p-8 mb-6">
               <div className="flex justify-between items-start mb-6">
@@ -293,10 +301,16 @@ export default function Profile() {
         )}
       </div>
 
-      
-      {activeTab === 'applied' && (
-        <div className="max-w-6xl mx-auto mt-6 px-4 md:px-8">
-          <div className="bg-white shadow-md border rounded-xl p-6 md:p-8">
+      {showApplications && (
+        <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-4xl relative">
+            <button
+              onClick={() => setShowApplications(false)}
+              className="absolute top-3 right-4 text-gray-600 hover:text-black text-xl font-bold"
+            >
+              ×
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Applied Companies</h2>
             <Application />
           </div>
         </div>

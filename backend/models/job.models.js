@@ -25,11 +25,12 @@ const jobSchema = mongoose.Schema({
         type: [String],
         required: true
     },
-    jobType: {
-        type: String,
-        enum: ['Full-time', 'Part-time', 'Contract', 'Internship'],
-        required: true
-    },
+   jobType: {
+  type: String,
+  enum: ["Full-time", "Part-time", "Internship", "Remote", "Contract", "Temporary"],
+  required: true,
+},
+
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

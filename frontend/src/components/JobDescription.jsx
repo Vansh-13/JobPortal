@@ -120,10 +120,15 @@ function JobDescription() {
         {/* Company Info */}
         <div className="flex items-center gap-4 border-b pb-4 mb-6">
           <img
-            src={job?.company?.logo || 'https://cdn-icons-png.flaticon.com/512/2504/2504799.png'}
-            alt="Company Logo"
-            className="h-16 w-16 rounded-full border p-1 bg-white object-contain"
-          />
+  src={
+    job?.company?.logo?.trim()
+      ? `http://localhost:7000${job.company.logo}`
+      : 'https://cdn-icons-png.flaticon.com/512/2504/2504799.png'
+  }
+  alt="Company Logo"
+  className="h-16 w-16 rounded-full border p-1 bg-white object-contain"
+/>
+
           <div>
             <h1 className="text-2xl font-bold text-gray-800">{job?.company?.name || 'Company Name'}</h1>
             <p className="text-sm text-gray-500">{job?.company?.website || 'www.example.com'}</p>

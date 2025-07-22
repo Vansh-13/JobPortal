@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setUser } from '../../redux/authSlice.js';
 import { ImSpinner2 } from 'react-icons/im';
+import { Eye, EyeOff } from 'lucide-react';
 
 function Login() {
   const loading = useSelector((state) => state.auth.loading);
@@ -13,6 +14,7 @@ function Login() {
   const navigate = useNavigate();
 
   const [input, setInput] = useState({ email: '', password: '', role: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState('');
   const [timer, setTimer] = useState(90);
@@ -60,9 +62,9 @@ function Login() {
 
   const handleOtpVerify = async () => {
     if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
-  toast.error("Please enter a valid 6-digit OTP");
-  return;
-}
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
+    }
 
     try {
       dispatch(setLoading(true));
@@ -151,14 +153,25 @@ function Login() {
                 placeholder="Email"
                 className={inputClass}
               />
-              <input
-                type="password"
-                name="password"
-                value={input.password}
-                onChange={changeHandle}
-                placeholder="Password"
-                className={inputClass}
-              />
+
+              {/* Password input with eye icon */}
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={input.password}
+                  onChange={changeHandle}
+                  placeholder="Password"
+                  className={inputClass}
+                />
+                <div
+                  className="absolute right-3 top-2.5 cursor-pointer text-gray-500 hover:text-teal-600"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                </div>
+              </div>
+
               <select
                 name="role"
                 value={input.role}
@@ -205,7 +218,6 @@ function Login() {
               maxLength={6}
               pattern="[0-9]*"
               value={otp}
-              
               onChange={(e) => setOtp(e.target.value)}
               placeholder="Enter OTP"
               className={inputClass}

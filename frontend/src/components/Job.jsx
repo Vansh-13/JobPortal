@@ -12,10 +12,16 @@ function Job({ job }) {
     <div className="border border-gray-100 shadow-sm hover:shadow-lg rounded-2xl p-6 bg-white/80 backdrop-blur-md transition-all flex flex-col justify-between h-full space-y-5">
       <div className="flex items-start gap-4">
         <Avatar className="w-12 h-12">
-          <AvatarImage
-            src={job?.company?.logo || "https://cdn-icons-png.flaticon.com/512/2504/2504799.png"}
-            alt={`${job?.company?.name || 'Company'} Logo`}
-          />
+    <AvatarImage
+  src={
+    job?.company?.logo?.trim()
+      ? `http://localhost:7000${job.company.logo}`
+      : "https://cdn-icons-png.flaticon.com/512/2504/2504799.png"
+  }
+  alt={`${job?.company?.name || 'Company'} Logo`}
+  className="w-12 h-12 object-contain rounded-full"
+/>
+
         </Avatar>
 
         <div className="flex-1">
